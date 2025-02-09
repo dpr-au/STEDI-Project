@@ -1,0 +1,333 @@
+{
+	"jobConfig": {
+		"name": "Accelerometer Trusted Zone",
+		"description": "",
+		"role": "arn:aws:iam::864662948199:role/my-glue-service-role",
+		"command": "glueetl",
+		"version": "5.0",
+		"runtime": null,
+		"workerType": "G.1X",
+		"numberOfWorkers": 10,
+		"maxCapacity": 10,
+		"jobRunQueuingEnabled": false,
+		"maxRetries": 0,
+		"timeout": 480,
+		"maxConcurrentRuns": 1,
+		"security": "none",
+		"scriptName": "Accelerometer Trusted Zone.py",
+		"scriptLocation": "s3://aws-glue-assets-864662948199-us-east-1/scripts/",
+		"language": "python-3",
+		"spark": true,
+		"sparkConfiguration": "standard",
+		"jobParameters": [],
+		"tags": [],
+		"jobMode": "VISUAL_MODE",
+		"createdOn": "2025-01-31T20:55:26.377Z",
+		"developerMode": false,
+		"connectionsList": [],
+		"temporaryDirectory": "s3://aws-glue-assets-864662948199-us-east-1/temporary/",
+		"logging": true,
+		"glueHiveMetastore": true,
+		"etlAutoTuning": true,
+		"metrics": true,
+		"observabilityMetrics": true,
+		"bookmark": "job-bookmark-disable",
+		"sparkPath": "s3://aws-glue-assets-864662948199-us-east-1/sparkHistoryLogs/",
+		"flexExecution": false,
+		"minFlexWorkers": null,
+		"maintenanceWindow": null,
+		"pythonPath": ""
+	},
+	"dag": {
+		"node-1738356558832": {
+			"nodeId": "node-1738356558832",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1738356099371"
+			],
+			"name": "Drop Fields",
+			"generatedNodeName": "DropFields_node1738356558832",
+			"classification": "Transform",
+			"type": "DropFields",
+			"paths": [
+				"email",
+				"phone",
+				"birthday",
+				"serialnumber",
+				"registrationdate",
+				"lastupdatedate",
+				"sharewithresearchasofdate",
+				"sharewithpublicasofdate",
+				"sharewithfriendsasofdate",
+				"customername"
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2,
+			"outputSchemas": [
+				[
+					{
+						"key": "serialNumber",
+						"fullPath": [
+							"serialNumber"
+						],
+						"type": "string"
+					},
+					{
+						"key": "z",
+						"fullPath": [
+							"z"
+						],
+						"type": "double"
+					},
+					{
+						"key": "birthDay",
+						"fullPath": [
+							"birthDay"
+						],
+						"type": "string"
+					},
+					{
+						"key": "shareWithPublicAsOfDate",
+						"fullPath": [
+							"shareWithPublicAsOfDate"
+						],
+						"type": "long"
+					},
+					{
+						"key": "shareWithResearchAsOfDate",
+						"fullPath": [
+							"shareWithResearchAsOfDate"
+						],
+						"type": "long"
+					},
+					{
+						"key": "registrationDate",
+						"fullPath": [
+							"registrationDate"
+						],
+						"type": "long"
+					},
+					{
+						"key": "customerName",
+						"fullPath": [
+							"customerName"
+						],
+						"type": "string"
+					},
+					{
+						"key": "user",
+						"fullPath": [
+							"user"
+						],
+						"type": "string"
+					},
+					{
+						"key": "shareWithFriendsAsOfDate",
+						"fullPath": [
+							"shareWithFriendsAsOfDate"
+						],
+						"type": "long"
+					},
+					{
+						"key": "y",
+						"fullPath": [
+							"y"
+						],
+						"type": "double"
+					},
+					{
+						"key": "x",
+						"fullPath": [
+							"x"
+						],
+						"type": "double"
+					},
+					{
+						"key": "timestamp",
+						"fullPath": [
+							"timestamp"
+						],
+						"type": "long"
+					},
+					{
+						"key": "lastUpdateDate",
+						"fullPath": [
+							"lastUpdateDate"
+						],
+						"type": "long"
+					}
+				]
+			]
+		},
+		"node-1738356086890": {
+			"nodeId": "node-1738356086890",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "AWS Glue Data Catalog",
+			"generatedNodeName": "AWSGlueDataCatalog_node1738356086890",
+			"classification": "DataSource",
+			"type": "Catalog",
+			"isCatalog": true,
+			"database": "stedi",
+			"table": "accelerometer_landing",
+			"calculatedType": "",
+			"runtimeParameters": [],
+			"codeGenVersion": 2
+		},
+		"node-1738356099371": {
+			"nodeId": "node-1738356099371",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1738356086890",
+				"node-1738427479240"
+			],
+			"name": "Customer Privacy Filter",
+			"generatedNodeName": "CustomerPrivacyFilter_node1738356099371",
+			"classification": "Transform",
+			"type": "Join",
+			"joinType": "equijoin",
+			"columns": [
+				{
+					"from": "node-1738356086890",
+					"keys": [
+						"user"
+					]
+				},
+				{
+					"from": "node-1738427479240",
+					"keys": [
+						"email"
+					]
+				}
+			],
+			"columnConditions": [
+				"="
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1738356301411": {
+			"nodeId": "node-1738356301411",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1738356558832"
+			],
+			"name": "Accelometer Trusted",
+			"generatedNodeName": "AccelometerTrusted_node1738356301411",
+			"classification": "DataSink",
+			"type": "S3",
+			"streamingBatchInterval": 100,
+			"format": "json",
+			"compression": "none",
+			"path": "s3://stedi-proj4/accelerometer/trusted/",
+			"partitionKeys": [],
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": true,
+				"updateBehavior": "UPDATE_IN_DATABASE",
+				"database": "stedi",
+				"table": "accelerometer_trusted"
+			},
+			"updateCatalogOptions": "schemaAndPartitions",
+			"autoDataQuality": {
+				"isEnabled": true,
+				"evaluationContext": "EvaluateDataQuality_node1738356037811"
+			},
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1738427479240": {
+			"classification": "DataSource",
+			"type": "Catalog",
+			"name": "AWS Glue Data Catalog",
+			"inputs": [],
+			"database": "stedi",
+			"table": "customer_trusted",
+			"runtimeParameters": [],
+			"iconUrl": "https://a.b.cdn.console.awsstatic.com/a/v1/4E73H6RAPN2RZRVWZ75GUJSE4JJPQEGYMPHGIIQWXEP6G7RQ3KAA/static/media/data-catalog.8b8a27f5.svg",
+			"generatedNodeName": "AWSGlueDataCatalog_node1738427479240",
+			"codeGenVersion": 2,
+			"outputSchemas": [
+				[
+					{
+						"key": "customername",
+						"fullPath": [
+							"customername"
+						],
+						"type": "string"
+					},
+					{
+						"key": "email",
+						"fullPath": [
+							"email"
+						],
+						"type": "string"
+					},
+					{
+						"key": "phone",
+						"fullPath": [
+							"phone"
+						],
+						"type": "string"
+					},
+					{
+						"key": "birthday",
+						"fullPath": [
+							"birthday"
+						],
+						"type": "string"
+					},
+					{
+						"key": "serialnumber",
+						"fullPath": [
+							"serialnumber"
+						],
+						"type": "string"
+					},
+					{
+						"key": "registrationdate",
+						"fullPath": [
+							"registrationdate"
+						],
+						"type": "long"
+					},
+					{
+						"key": "lastupdatedate",
+						"fullPath": [
+							"lastupdatedate"
+						],
+						"type": "long"
+					},
+					{
+						"key": "sharewithresearchasofdate",
+						"fullPath": [
+							"sharewithresearchasofdate"
+						],
+						"type": "long"
+					},
+					{
+						"key": "sharewithpublicasofdate",
+						"fullPath": [
+							"sharewithpublicasofdate"
+						],
+						"type": "long"
+					},
+					{
+						"key": "sharewithfriendsasofdate",
+						"fullPath": [
+							"sharewithfriendsasofdate"
+						],
+						"type": "long"
+					}
+				]
+			]
+		}
+	},
+	"hasBeenSaved": false,
+	"usageProfileName": null
+}
